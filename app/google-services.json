@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "69680275103",
+    "firebase_url": "https://okhlee-af15b.firebaseio.com",
+    "project_id": "okhlee-af15b",
+    "storage_bucket": "okhlee-af15b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:69680275103:android:844436c253231aae",
+        "android_client_info": {
+          "package_name": "com.okhlee.capp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "69680275103-sf694j5rkcseutd456b7ua9erc71aaoq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.okhlee.capp",
+            "certificate_hash": "cebd73bf2e096c73d304d794880029eb1a9351a4"
+          }
+        },
+        {
+          "client_id": "69680275103-s8qlo8pdk20378jfc8ffe9pupakmuq7h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGA-9YtXO6HiKiudZ1LoqrP5m_au59Mzw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "69680275103-s8qlo8pdk20378jfc8ffe9pupakmuq7h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
