@@ -3,6 +3,7 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="facebook_application_id" translatable="false">153437831892491</string>
+    <string name="fb_login_protocol_scheme">fb153437831892491</string>
+
 </resources>

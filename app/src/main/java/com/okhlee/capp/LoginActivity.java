@@ -2,7 +2,9 @@ package com.okhlee.capp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,12 +13,18 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.okhlee.capp.CustomElements.CustomFontTextView;
+
+
+import java.util.Collections;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -28,6 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private String mUsername, mPassword;
 
+    private static int fb_Signin=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,17 +50,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (mAuth.getCurrentUser() != null) {
-                    if (mAuth.getCurrentUser().isEmailVerified()) {
 
-                   //This is where our main news activity will pop up after user has signedup
-                        Toast.makeText(LoginActivity.this, "New screen will pop up", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this,NewsActivity.class));
 
-                    }
 
                 }
             }
         };
         mProgressDialog = new ProgressDialog(this);
+
 
     }
 
@@ -101,11 +108,47 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         if (v == tv_facebook) {
 
+            facebookLogin();
         }
 
 
     }
 
+    private void facebookLogin() {
+
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(
+                                Collections.singletonList(
+                                        new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()
+                                ))
+                        .build(), fb_Signin);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==fb_Signin) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+
+            if (resultCode == RESULT_OK) {
+                startActivity(new Intent(LoginActivity.this, NewsActivity.class));
+            }
+            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                Toast.makeText(this, "NO internet connection", Toast.LENGTH_SHORT).show();
+
+                return;
+            }
+
+            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        }
+    }
 
     private void startLoginTask() {
 
@@ -115,18 +158,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
-                if (mAuth.getCurrentUser().isEmailVerified()) {
-                    if (task.isSuccessful()) {
-                        //
-                        Toast.makeText(LoginActivity.this, "New Activity", Toast.LENGTH_SHORT).show();
-                        mProgressDialog.dismiss();
-                    } else {
+                if (mAuth.getCurrentUser() != null) {
+                    if (mAuth.getCurrentUser().isEmailVerified()) {
+                        if (task.isSuccessful()) {
+                            //
+                            startActivity(new Intent(LoginActivity.this,NewsActivity.class));
+                            mProgressDialog.dismiss();
+                        } else {
 
-                        Toast.makeText(LoginActivity.this, "Please Check your credentials ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Please Check your credentials ", Toast.LENGTH_SHORT).show();
+                            mProgressDialog.dismiss();
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Please Verify your email address first!", Toast.LENGTH_SHORT).show();
                         mProgressDialog.dismiss();
                     }
-                } else {
-                    Toast.makeText(LoginActivity.this, "Please Verify your email address first!", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(LoginActivity.this, "User Doesn't exist. SignUp First!", Toast.LENGTH_SHORT).show();
                     mProgressDialog.dismiss();
                 }
             }
