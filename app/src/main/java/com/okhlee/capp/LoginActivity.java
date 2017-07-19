@@ -2,12 +2,15 @@ package com.okhlee.capp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.preference.PreferenceManager;
+
+import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -33,7 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private ProgressDialog mProgressDialog;
-
+    ActivityOptionsCompat compat;
     private String mUsername, mPassword;
 
     private static int fb_Signin=1;
@@ -41,8 +44,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(Build.VERSION.SDK_INT>=21)
+        {
+            TransitionInflater transitionInflater=TransitionInflater.from(this);
+            Transition transition=transitionInflater.inflateTransition(R.transition.transition_a);
+            getWindow().setExitTransition(transition);
+        }
         setContentView(R.layout.activity_login_activity);
-
+        compat=ActivityOptionsCompat.makeSceneTransitionAnimation(LoginActivity.this,null);
         bindViews();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         mAuth = FirebaseAuth.getInstance();
@@ -58,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         };
         mProgressDialog = new ProgressDialog(this);
+
 
 
     }
@@ -101,10 +111,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         }
         if (v == tv_createaccount) {
-            startActivity(new Intent(this, SignupActivity.class));
+
+
+            startActivity(new Intent(this, SignupActivity.class),compat.toBundle());
         }
         if (v == tv_forgetpassword) {
 
+            startActivity(new Intent(this, ForgotPassword.class),compat.toBundle());
         }
         if (v == tv_facebook) {
 
@@ -122,7 +135,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         .setAvailableProviders(
                                 Collections.singletonList(
                                         new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()
-                                ))
+                                )).setIsSmartLockEnabled(false)
                         .build(), fb_Signin);
 
     }
@@ -161,9 +174,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (mAuth.getCurrentUser() != null) {
                     if (mAuth.getCurrentUser().isEmailVerified()) {
                         if (task.isSuccessful()) {
-                            //
-                            startActivity(new Intent(LoginActivity.this,NewsActivity.class));
                             mProgressDialog.dismiss();
+                            startActivity(new Intent(LoginActivity.this,NewsActivity.class),compat.toBundle());
+
                         } else {
 
                             Toast.makeText(LoginActivity.this, "Please Check your credentials ", Toast.LENGTH_SHORT).show();

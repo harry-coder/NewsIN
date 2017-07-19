@@ -2,13 +2,16 @@ package com.okhlee.capp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.transition.Slide;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -16,11 +19,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.okhlee.capp.CustomElements.CustomFontTextView;
+import com.okhlee.capp.CustomElements.CustomTransition;
 
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText et_userName, et_password, et_confirmPassword;
-    private Button bt_signUp;
+    private CustomFontTextView bt_signUp;
+    private ImageView im_backButton;
     private String mSignupUsername, mSignupPassword, mSignupConfirmpassword;
     private FirebaseAuth mAuth;
     private ProgressDialog mProgressDialog;
@@ -28,6 +34,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        CustomTransition.slideActivity(this);
+
         setContentView(R.layout.activity_signup);
 
         bindViews();
@@ -35,6 +44,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         mAuth = FirebaseAuth.getInstance();
 
         bt_signUp.setOnClickListener(this);
+        im_backButton.setOnClickListener(this);
 
         mProgressDialog = new ProgressDialog(this);
     }
@@ -43,9 +53,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         et_userName = (EditText) findViewById(R.id.et_username);
         et_password = (EditText) findViewById(R.id.et_password);
-        et_confirmPassword = (EditText) findViewById(R.id.et_confirmPassword);
-
-        bt_signUp = (Button) findViewById(R.id.bt_signup);
+        et_confirmPassword = (EditText) findViewById(R.id.et_newPassword);
+        im_backButton = (ImageView) findViewById(R.id.im_backbutton);
+        bt_signUp = (CustomFontTextView) findViewById(R.id.bt_signup);
     }
 
     @Override
@@ -54,6 +64,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             if (validateEntries()) {
                 firebaseCreateNewUser();
             }
+        }
+        if(v==im_backButton)
+        {
+            this.finish();
         }
 
     }

@@ -20,7 +20,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".SignupActivity" />
-        <activity android:name=".NewsActivity"></activity>
+        <activity
+            android:name=".NewsActivity"
+            android:label="Okhlee"
+            android:theme="@style/NewsActivity"></activity>
+        <activity android:name=".ForgotPassword"></activity>
     </application>
 
 </manifest>
